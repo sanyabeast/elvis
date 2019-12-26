@@ -3,6 +3,7 @@
                 <WindowManager
                         ref="window_manager"
                 />
+                <div v-html="test_message"></div>
         </div>    
         
 </template>
@@ -10,17 +11,28 @@
 
         import Vue from "vue"
         
+        import AppComponent from "../AppComponent.vue"
+
         /**Window System */
         import WindowManager from "../../UI/Vue/WindowManager/WindowManager.vue"
         import Window from "../../UI/Vue/WindowManager/Window.vue"
 
         export default Vue.extend({
                 name: "Editor",
+                mixins: [ AppComponent ],
                 components: { WindowManager, Window },
+                props: {
+                        test_message: { type: String, default: ()=> "" }
+                },
+                data () {
+                        return {
+                                kek: 1
+                        }
+                },
                 mounted () {
                         console.log("Editor Mounted")
 
-                        for ( var a = 0; a < 10; a++ ) {
+                        for ( var a = 0; a < 3; a++ ) {
                                 this.$refs["window_manager"].create_window()
                         }
                 }

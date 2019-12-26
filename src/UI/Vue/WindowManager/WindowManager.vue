@@ -34,7 +34,6 @@ export default Vue.extend({
                         this.window_manager_data.windows.push({})
                 },
                 on_window_clicked ( index ) {
-                        console.log(index)
                         this.focused_window_index = index
                 }
         }

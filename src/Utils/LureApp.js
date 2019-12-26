@@ -6,7 +6,7 @@ Vue.prototype.$super = VueSuperMethod
 Vue.use(Vuex)
 
 export default class LureApp {
-        constructor () {
+        constructor ( props_data ) {
                 this.vue_app = null
 
                 let build_data = this.get_build_data()
@@ -14,9 +14,10 @@ export default class LureApp {
                 console.dir(build_data.vue_component_class)
 
                 let store = new Vuex.Store(build_data.store_data)
-                let vue_app = this.vue_app = new Vue({
-                        store,
-                        render: h => h(build_data.vue_component_class)
+
+                let vue_app = this.vue_app = new build_data.vue_component_class({
+                      store,  
+                      propsData: props_data
                 })
 
         }
@@ -33,7 +34,7 @@ export default class LureApp {
                 return this
         }
 
-        static spawn_app ( AppClass, mount_target ) {
-                return new AppClass().mount( mount_target )
+        static spawn_app ( AppClass, props_data, mount_target ) {
+                return new AppClass( props_data ).mount( mount_target )
         }
 }
