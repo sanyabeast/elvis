@@ -12,24 +12,34 @@
                 name: "Resizable",
                 data () {
                         return {
-                                resizable_size: {
-                                        x: 100,
-                                        y: 100
+                                resizable_data: {
+                                        size: {
+                                                x: 100,
+                                                y: 100
+                                        },
+                                        min_size: {
+                                                x: 100,
+                                                y: 100
+                                        }
                                 }
                         }
                 },
                 mounted () {
-                        console.log( "Resizable Mounted" )
                 },
                 methods: {
                         set_size ( x, y ){
-                                this.resizable_size.x = x
-                                this.resizable_size.y = y
+                                if (x < this.resizable_data.min_size.x) x = this.resizable_data.min_size.x
+                                if (y < this.resizable_data.min_size.y) y = this.resizable_data.min_size.y
+
+                                this.resizable_data.size.x = x
+                                this.resizable_data.size.y = y
+                        },
+                        get_size () {
+                                return this.resizable_data.size
                         }
                 },
                 
                 beforeDestroy () {
-                        console.log( "Resizable Destroy" )
                 }
         })
 

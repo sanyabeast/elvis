@@ -1,9 +1,13 @@
 <template>
         <div 
                 class="window_system___window"
+                @click="on_clicked"
+                v-bind:class="{
+                        fx_enabled: $store.state.editor.fx_enabled
+                }"
                 v-bind:style="{
-                        width: `${this.resizable_size.x}px`,
-                        height: `${this.resizable_size.y}px`,
+                        width: `${this.resizable_data.size.x}px`,
+                        height: `${this.resizable_data.size.y}px`,
                 }">
                 <div 
                         class="window_system___resize_border"
@@ -17,12 +21,15 @@
                                 class="window_system___header">
                                 <div 
                                         class="window_system___header___caption"
-                                        v-html="window_caption">
+                                        v-html="xwindow.caption">
 
                                 </div>
                                 <div class="window_system___window_controls">
-                                        <Button
-                                                button_caption_text="✕"
+                                        <Toolbar
+                                                :uikit_toolbar="{
+                                                        buttons: window_data.controls_buttons
+                                                }"
+                                                @button_click="on_controls_toolbar_click"
                                         />
                                 </div>
                         </div>
@@ -40,29 +47,72 @@
         import Resizable from "../Mixins/Resizable.vue"
         import UserResizable from "../Mixins/UserResizable.vue"
         import Button from "../UIKit/Button.vue"
+        import Toolbar from "../UIKit/Toolbar.vue"
 
         export default Vue.extend({
                 name: "Window",
-                mixins: [ Draggable, UserResizable ],
+                mixins: [ Draggable, UserResizable, Toolbar ],
                 components: { Button },
                 data () {
                         return {
-                                draggable_element_ref: "header",
-                                user_resizable_element_ref: "resize_border",
-                                resizable_size: {
-                                        x: 250,
-                                        y: 250
+                                draggable_data: {
+                                        draggable_el_ref: "header"
+                                },
+                                user_resizable_data: {
+                                        user_resizable_element_ref: "resize_border",
+                                },
+                                resizable_data: {
+                                        size: {
+                                                x: 250,
+                                                y: 250
+                                        },
+                                        min_size: {
+                                                x: 250,
+                                                y: 250
+                                        }
+                                },
+                                window_data: {
+                                        controls_buttons: {
+                                                minimize: {
+                                                        button_props: {
+                                                                caption_enabled: true,
+                                                                caption_text: "_" 
+                                                        }
+                                                        
+                                                },
+                                                close: {
+                                                        button_props: {
+                                                                caption_enabled: true,
+                                                                caption_text: "✕" 
+                                                        }
+                                                        
+                                                }
+                                        }
                                 }
                         }
                 },
                 props: {
-                        window_caption: { type: String, default: ()=> "Window" }
+                        xwindow: {
+                                type: Object,
+                                default: ()=> {
+                                        return {
+                                                caption: "Window"
+                                        }
+                                }
+                        }
                 },
                 mounted () {
                         console.log( "Window Mounted" )
                 },
                 methods: {
-                        
+                        on_controls_toolbar_click ( p ) {
+                                this.$emit(`user_requests_${p.button_id}`)
+                        },
+                        on_clicked () {
+                                this.$emit("click", {
+                                        xwindow: this
+                                })
+                        }
                 }
         })
 
@@ -135,9 +185,15 @@
                         .window_system___window___content {
                                 flex-grow: 1;
                                 background: $content_color;
+                                height: calc(100% - 40px);
                         }
                 }
 
+                &.fx_enabled {
+                        .window_system___window___window_content {
+                                box-shadow: 0px 0px 16px 8px #00000026;
+                        }
+                }
                 
         }
 </style>
